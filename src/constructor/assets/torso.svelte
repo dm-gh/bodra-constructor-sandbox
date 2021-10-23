@@ -1,0 +1,8 @@
+<svg viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+        on:click
+        d="M229.497 71.6068L77.2297 71.6067L103.717 264.967H199.988L229.497 71.6068Z"
+        fill="white"
+        stroke="currentColor"
+    />
+</svg>
