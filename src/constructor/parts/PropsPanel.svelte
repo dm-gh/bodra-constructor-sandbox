@@ -1,4 +1,23 @@
-<div></div>
+<script>
+    import Accordion from '../common/accordion/Accordion.svelte';
+    import AccordionItem from '../common/accordion/AccordionItem.svelte';
+</script>
+
+<div>
+
+    <Accordion>
+        <AccordionItem key="color" title="Color">
+            Color!!!
+        </AccordionItem>
+        <AccordionItem key="shape" title="Shape">
+            Shape!!!
+        </AccordionItem>
+        <AccordionItem key="pattern" title="Pattern">
+            Pattern!!!
+        </AccordionItem>
+    </Accordion>
+
+</div>
 
 <style>
     div {
