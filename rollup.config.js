@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import inlineSvg from 'rollup-plugin-inline-svg';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -48,6 +49,28 @@ function makeConfig(input, name, extraPlugins) {
                     dev: !production
                 }
             }),
+
+            inlineSvg({
+                // Removes specified tags and its children. You can specify tags by setting removingTags query array.
+                // default: false
+                removeTags: false,
+                // warning: this won't work unless you specify removeTags: true
+                // default: ['title', 'desc', 'defs', 'style']
+                removingTags: [],
+                // warns about present tags, ex: ['desc', 'defs', 'style']
+                // default: []
+                warnTags: [],
+                // Removes `width` and `height` attributes from <svg>.
+                // default: true
+                removeSVGTagAttrs: false,
+                // Removes attributes from inside the <svg>.
+                // default: []
+                removingTagAttrs: [],
+                // Warns to console about attributes from inside the <svg>.
+                // default: []
+                warnTagAttrs: []
+            }),
+
             // we'll extract any component CSS out into
             // a separate file - better for performance
             css({ output: `${name}.css` }),
