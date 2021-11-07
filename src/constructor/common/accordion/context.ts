@@ -4,11 +4,11 @@ import { writable } from 'svelte/store';
 export const accordionContextKey = Symbol('accordionContextKey');
 
 export type AccordionContextType = {
-    activeKey: Writable<string | null>
+    activeKeys: Writable<string[]>
 }
 
 export function createNewAccordionContext(): AccordionContextType {
     return {
-        activeKey: writable(null),
+        activeKeys: writable([]),
     }
 }

@@ -2,7 +2,7 @@
     import type { DressElement } from './store';
     import assets from '../../assets';
     import { onMount } from 'svelte';
-    import { selectedElementOnDisplay } from './store';
+    import { selectedDressElementKey } from './store';
 
     export let element: DressElement;
 
@@ -14,7 +14,7 @@
 
     onMount(() => {
         const clickListener = () => {
-            selectedElementOnDisplay.set(element.key);
+            selectedDressElementKey.set(element.key);
         };
 
         const mouseEnterListener = () => {
@@ -24,7 +24,7 @@
             hovering = false;
         };
 
-        Array.from(wrapperDiv.querySelectorAll('svg > *')).forEach(element => {
+        Array.from(wrapperDiv.querySelectorAll('svg .hitbox')).forEach(element => {
             element.addEventListener('click', clickListener)
             element.addEventListener('mouseenter', mouseEnterListener)
             element.addEventListener('mouseleave', mouseLeaveListener)
@@ -34,7 +34,7 @@
 
 <div
     class="element"
-    class:selected={$selectedElementOnDisplay === element.key}
+    class:selected={$selectedDressElementKey === element.key}
     class:hovering
     bind:this={wrapperDiv}
 >
@@ -58,11 +58,13 @@
         pointer-events: initial;
     }
 
-    .element.hovering:not(.selected) {
+    .element.hovering:not(.selected) :global(.hitbox) {
         stroke-width: 2px;
-        color: #039be5;
+        stroke: #039be5;
+        z-index: 2;
     }
-    .element.selected {
-        color: #039be5;
+    .element.selected :global(.hitbox) {
+        stroke: #039be5;
+        z-index: 1;
     }
 </style>

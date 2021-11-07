@@ -1,27 +1,36 @@
 <script lang="ts">
     import { accordionContextKey, AccordionContextType } from './context';
     import { getContext, onMount } from 'svelte';
-    import { get } from 'svelte/store';
 
     export let title: string;
     export let key: string;
 
-    const { activeKey } = getContext<AccordionContextType>(accordionContextKey)
+    const { activeKeys } = getContext<AccordionContextType>(accordionContextKey)
+
+    function activateKey() {
+        activeKeys.update(keys => [...keys, key]);
+    }
+
+    function deactivateKey() {
+        activeKeys.update(keys => keys.filter(k => k !== key));
+    }
+
+    $: isKeyActive = $activeKeys.indexOf(key) !== -1;
 
     onMount(() => {
-        if (get(activeKey) === null) {
-            activeKey.set(key);
+        if (!isKeyActive) {
+            activateKey();
         }
     })
 </script>
 
 <div class="wrapper">
-    <div class="title" on:click={() => activeKey.set(key)}>
+    <div class="title" on:click={isKeyActive ? deactivateKey : activateKey}>
         <span>{title}</span>
 
         <svg
             class="title-arrow"
-            class:active={$activeKey === key}
+            class:active={isKeyActive}
             width="1em"
             height="1em"
             xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +43,7 @@
         </svg>
     </div>
 
-    {#if $activeKey === key}
+    {#if isKeyActive}
         <div class="content">
             <slot></slot>
         </div>
@@ -52,6 +61,7 @@
         justify-content: space-between;
         color: #333333;
         border-bottom: 1px solid #dadada;
+        cursor: pointer;
     }
     .title-arrow {
         transform: rotate(0);

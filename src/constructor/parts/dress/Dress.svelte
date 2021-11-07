@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { defaultDress } from './store';
+    import { currentDress } from './store';
     import DressElement from './DressElement.svelte';
 
 </script>
 
 <div class="wrapper">
-    {#each defaultDress as dressElement}
+    {#each $currentDress as dressElement}
         <DressElement element={dressElement}/>
     {/each}
 </div>
