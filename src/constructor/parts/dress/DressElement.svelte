@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { DressElement } from './store';
-    import assets from '../../assets';
+    import assets from '../../assets/shapes';
     import { onMount } from 'svelte';
-    import { selectedDressElementKey } from './store';
+    import { selectedDressElementKey, visibleDressSide } from './store';
 
     export let element: DressElement;
 
@@ -36,6 +36,8 @@
     class="element"
     class:selected={$selectedDressElementKey === element.key}
     class:hovering
+    class:front={$visibleDressSide === 'front'}
+    class:back={$visibleDressSide === 'back'}
     bind:this={wrapperDiv}
 >
     {@html svgElement}
@@ -54,17 +56,18 @@
         width: 300px;
         pointer-events: none;
     }
-    .element > :global(svg) > :global(*) {
+    .element > :global(svg) :global(.hitbox) {
         pointer-events: initial;
     }
 
-    .element.hovering:not(.selected) :global(.hitbox) {
+    .element.selected :global(.hitbox) {
         stroke-width: 2px;
         stroke: #039be5;
-        z-index: 2;
     }
-    .element.selected :global(.hitbox) {
-        stroke: #039be5;
-        z-index: 1;
+
+    .element:not(.front) :global(.front),
+    .element:not(.back) :global(.back) {
+        display: none;
+        pointer-events: none;
     }
 </style>

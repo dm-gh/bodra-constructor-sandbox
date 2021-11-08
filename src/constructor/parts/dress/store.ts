@@ -1,5 +1,7 @@
 import { derived, readable, writable } from 'svelte/store';
 
+/* TYPES */
+
 export type Dress = DressElement[];
 
 export type DressElement = {
@@ -7,76 +9,105 @@ export type DressElement = {
     title: string;
     shape: string;
     shapeOptions: string[];
-    color: string;
-    colorOptions: string[];
-    pattern: string;
-    patternOptions: string[];
-}
+    material: string,
+    materialOptions: string[],
+};
+
+export type DressModifications = {
+    shape: {[key: string]: string},
+    material: {[key: string]: string},
+};
+
+/* CONSTANTS */
+
+const ALL_MATERIALS = [
+    'leopard',
+    'red_striped',
+    'blue_dotted',
+    'white_cherries',
+    'shiny',
+];
+const DEFAULT_MATERIAL = ALL_MATERIALS[0];
 
 const defaultDress: Dress = [
     {
-        key: 'collar',
-        title: 'Воротник',
-        shape: 'backCollar',
-        shapeOptions: ['frontCollar', 'backCollar'],
-        color: '#ffffff',
-        colorOptions: ['#ff0000', '#ffffff'],
-        pattern: 'none',
-        patternOptions: ['none'],
-    },
-    {
         key: 'skirt',
         title: 'Юбка',
-        shape: 'backSkirt',
-        shapeOptions: ['frontSkirt', 'backSkirt'],
-        color: '#ffffff',
-        colorOptions: ['#00ff00', '#ffffff'],
-        pattern: 'none',
-        patternOptions: ['none'],
-    },
-    {
-        key: 'sleeves',
-        title: 'Рукава',
-        shape: 'backSleeves',
-        shapeOptions: ['frontSleeves', 'backSleeves'],
-        color: '#ffffff',
-        colorOptions: ['#0000ff', '#ffffff'],
-        pattern: 'none',
-        patternOptions: ['none'],
+        shape: 'skirt',
+        shapeOptions: ['skirt'],
+        material: DEFAULT_MATERIAL,
+        materialOptions: ALL_MATERIALS,
     },
     {
         key: 'top',
         title: 'Верх',
-        shape: 'backTop',
-        shapeOptions: ['frontTop', 'backTop'],
-        color: '#ffffff',
-        colorOptions: ['#f0f000', '#ffffff'],
-        pattern: 'none',
-        patternOptions: ['none'],
+        shape: 'top',
+        shapeOptions: ['top'],
+        material: DEFAULT_MATERIAL,
+        materialOptions: ALL_MATERIALS,
+    },
+    {
+        key: 'collar',
+        title: 'Воротник',
+        shape: 'collar',
+        shapeOptions: ['collar'],
+        material: DEFAULT_MATERIAL,
+        materialOptions: ALL_MATERIALS,
+    },
+    {
+        key: 'sleeves',
+        title: 'Рукава',
+        shape: 'sleeves',
+        shapeOptions: ['sleeves', 'sleevesLong'],
+        material: DEFAULT_MATERIAL,
+        materialOptions: ALL_MATERIALS,
     },
     {
         key: 'belt',
         title: 'Пояс',
-        shape: 'backBelt',
-        shapeOptions: ['frontBelt', 'backBelt'],
-        color: '#ffffff',
-        colorOptions: ['#f0f000', '#ffffff'],
-        pattern: 'none',
-        patternOptions: ['none'],
+        shape: 'belt',
+        shapeOptions: ['belt'],
+        material: DEFAULT_MATERIAL,
+        materialOptions: ALL_MATERIALS,
     }
-]
+];
 
-export const currentDress = readable<DressElement[]>(defaultDress);
+const defaultDressModifications: DressModifications = {
+    shape: {},
+    material: {},
+};
+
+/* STORES */
+
+export const currentDress = readable<Dress>(defaultDress);
+
+export const currentDressModifications = writable<DressModifications>(defaultDressModifications);
+
+export const modifiedDress = derived(
+    [currentDress, currentDressModifications],
+    ([$currentDress, $currentDressModifications]) =>
+        $currentDress.map<DressElement>(dressElement => {
+            const shapeMod = $currentDressModifications.shape[dressElement.key];
+            const materialMod = $currentDressModifications.material[dressElement.key];
+            return {
+                ...dressElement,
+                shape: shapeMod === undefined ? dressElement.shape : shapeMod,
+                material: materialMod === undefined ? dressElement.material : materialMod,
+            }
+        })
+)
 
 export const selectedDressElementKey = writable<string | null>(defaultDress[0].key);
 
 export const selectedDressElement = derived(
-    [currentDress, selectedDressElementKey],
-    ([$currentDress, $selectedDressElementKey]) => {
+    [modifiedDress, selectedDressElementKey],
+    ([$modifiedDress, $selectedDressElementKey]) => {
         if ($selectedDressElementKey === null) return null;
 
-        return $currentDress.find(element => element.key === $selectedDressElementKey);
+        return $modifiedDress.find(element => element.key === $selectedDressElementKey);
     }
 );
+
+export const visibleDressSide = writable<'front' | 'back'>('front');
 
 
