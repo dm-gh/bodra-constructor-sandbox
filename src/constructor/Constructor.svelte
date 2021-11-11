@@ -20,6 +20,10 @@
         width: 900px; /* temporary */
     }
 
+    .wrapper :global(*) {
+        box-sizing: border-box;
+    }
+
     .display {
         flex: 0 0 600px;
         aspect-ratio: 1;

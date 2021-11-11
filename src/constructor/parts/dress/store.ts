@@ -1,4 +1,5 @@
-import { derived, readable, writable } from 'svelte/store';
+import { derived, get, readable, writable } from 'svelte/store';
+import { materials } from '../material/store';
 
 /* TYPES */
 
@@ -10,7 +11,6 @@ export type DressElement = {
     shape: string;
     shapeOptions: string[];
     material: string,
-    materialOptions: string[],
 };
 
 export type DressModifications = {
@@ -20,55 +20,41 @@ export type DressModifications = {
 
 /* CONSTANTS */
 
-const ALL_MATERIALS = [
-    'leopard',
-    'red_striped',
-    'blue_dotted',
-    'white_cherries',
-    'shiny',
-];
-const DEFAULT_MATERIAL = ALL_MATERIALS[0];
-
 const defaultDress: Dress = [
     {
         key: 'skirt',
         title: 'Юбка',
         shape: 'skirt',
         shapeOptions: ['skirt'],
-        material: DEFAULT_MATERIAL,
-        materialOptions: ALL_MATERIALS,
+        material: get(materials)[0].id,
     },
     {
         key: 'top',
         title: 'Верх',
         shape: 'top',
         shapeOptions: ['top'],
-        material: DEFAULT_MATERIAL,
-        materialOptions: ALL_MATERIALS,
+        material: get(materials)[0].id,
     },
     {
         key: 'collar',
         title: 'Воротник',
         shape: 'collar',
         shapeOptions: ['collar'],
-        material: DEFAULT_MATERIAL,
-        materialOptions: ALL_MATERIALS,
+        material: get(materials)[0].id,
     },
     {
         key: 'sleeves',
         title: 'Рукава',
         shape: 'sleeves',
         shapeOptions: ['sleeves', 'sleevesLong'],
-        material: DEFAULT_MATERIAL,
-        materialOptions: ALL_MATERIALS,
+        material: get(materials)[0].id,
     },
     {
         key: 'belt',
         title: 'Пояс',
         shape: 'belt',
         shapeOptions: ['belt'],
-        material: DEFAULT_MATERIAL,
-        materialOptions: ALL_MATERIALS,
+        material: get(materials)[0].id,
     }
 ];
 

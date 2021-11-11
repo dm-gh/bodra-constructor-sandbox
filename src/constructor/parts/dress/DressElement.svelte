@@ -3,6 +3,8 @@
     import assets from '../../assets/shapes';
     import { onMount } from 'svelte';
     import { selectedDressElementKey, visibleDressSide } from './store';
+    import MaterialView from '../../common/MaterialView.svelte';
+    import { materialsNormalized } from '../material/store';
 
     export let element: DressElement;
 
@@ -10,24 +12,20 @@
 
     let wrapperDiv: HTMLDivElement;
 
-    let hovering: boolean = false;
+    let hitboxGroups: [SVGPathElement[], SVGPathElement[]] = [[], []];
 
     onMount(() => {
         const clickListener = () => {
             selectedDressElementKey.set(element.key);
         };
 
-        const mouseEnterListener = () => {
-            hovering = true;
-        };
-        const mouseLeaveListener = () => {
-            hovering = false;
-        };
+        hitboxGroups = [
+            Array.from(wrapperDiv.querySelectorAll('svg g.front .hitbox')),
+            Array.from(wrapperDiv.querySelectorAll('svg g.back .hitbox')),
+        ];
 
         Array.from(wrapperDiv.querySelectorAll('svg .hitbox')).forEach(element => {
             element.addEventListener('click', clickListener)
-            element.addEventListener('mouseenter', mouseEnterListener)
-            element.addEventListener('mouseleave', mouseLeaveListener)
         })
     })
 </script>
@@ -35,11 +33,20 @@
 <div
     class="element"
     class:selected={$selectedDressElementKey === element.key}
-    class:hovering
     class:front={$visibleDressSide === 'front'}
     class:back={$visibleDressSide === 'back'}
     bind:this={wrapperDiv}
 >
+    {#each hitboxGroups as hitboxes, i}
+        {#if ($visibleDressSide === 'front' && i === 0)
+            || ($visibleDressSide === 'back' && i === 1)}
+            {#each hitboxes as hitbox}
+                <div class="material" style={`clip-path: path("${hitbox.getAttribute('d')}")`}>
+                    <MaterialView url={$materialsNormalized[element.material].imageUrl} />
+                </div>
+            {/each}
+        {/if}
+    {/each}
     {@html svgElement}
 </div>
 
@@ -69,5 +76,13 @@
     .element:not(.back) :global(.back) {
         display: none;
         pointer-events: none;
+    }
+
+    .material {
+        position: absolute;
+        inset: 0;
+        transform-origin: top left;
+        transform: scale(1.2) translateY(8px); /* TODO: redo */
+        z-index: -1;
     }
 </style>

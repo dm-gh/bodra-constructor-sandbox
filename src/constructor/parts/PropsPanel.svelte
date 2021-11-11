@@ -2,21 +2,12 @@
     // import Accordion from '../common/accordion/Accordion.svelte';
     // import AccordionItem from '../common/accordion/AccordionItem.svelte';
     // import DressElementColorSelector from './dress/DressElementColorSelector.svelte';
-    import MaterialSelector from '../common/MaterialSelector.svelte';
+    import DressElementMaterialSelector from './dress/DressElementMaterialSelector.svelte';
 </script>
 
 <div>
 
-    <MaterialSelector
-        options={[
-            'leopard',
-            'red_striped',
-            'blue_dotted',
-            'white_cherries',
-            'shiny',
-        ]}
-        value="leopard"
-    />
+    <DressElementMaterialSelector/>
 
 <!--    <DressElementColorSelector/>-->
 
