@@ -1,21 +1,31 @@
 <script lang="ts">
-    import shapes from '../assets/shapes';
+    import { createEventDispatcher } from 'svelte';
+    import { ShapeFromDb } from '../store/types';
+    import ShapeView from './ShapeView.svelte';
 
-    export let value: string;
-    export let options: string[];
+    export let value: ShapeFromDb;
+    export let options: ShapeFromDb[];
 
-    const shape = shapes[value];
+    const dispatch = createEventDispatcher<{change: ShapeFromDb}>();
+
+    function handleOptionChange(option: ShapeFromDb) {
+        dispatch('change', option);
+    }
 
 </script>
 
 <div class="options">
     {#each options as option}
-        <div
-            class="option"
-            class:selected={option === value}
-            style={`background-color: ${option}`}
-            on:click={() => value = option}
-        ></div>
+        <div class="option">
+            <div
+                class="option-image"
+                class:selected={option.id === value.id}
+                on:click={() => handleOptionChange(option)}
+            >
+                <ShapeView shape={option}/>
+            </div>
+            <span class="option-title">{option.title}</span>
+        </div>
     {/each}
 </div>
 
@@ -27,13 +37,26 @@
     }
     .option {
         margin: 6px;
-        border-radius: 50%;
-        border: 1px solid #dadada;
-        width: 2em;
-        height: 2em;
         cursor: pointer;
+        display: flex;
+        flex-direction: column;
     }
-    .option.selected {
-        border-color: #df00ff;
+    .option-image {
+        border: 1px solid #dadada;
+        width: 5em;
+        height: 3em;
+    }
+    .option-image > :global(svg) {
+        width: 100%;
+        height: 100%;
+    }
+    .option-image.selected {
+        border-color: #0077ff;
+        border-width: 2px;
+    }
+    .option-title {
+        color: #333333;
+        font-size: 0.75em;
     }
 </style>
+

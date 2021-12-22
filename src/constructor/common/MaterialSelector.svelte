@@ -1,16 +1,14 @@
 <script lang="ts">
-    import { materialsNormalized } from './store';
     import { createEventDispatcher } from 'svelte';
-    import MaterialView from '../../common/MaterialView.svelte';
+    import MaterialView from './MaterialView.svelte';
+    import { MaterialFromDb } from '../store/types';
 
-    // material Ids
-    export let options: string[] = [];
-    // selected material id
-    export let value: string;
+    export let options: MaterialFromDb[] = [];
+    export let value: MaterialFromDb;
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher<{change: MaterialFromDb}>();
 
-    function handleOptionChange(option: string) {
+    function handleOptionChange(option: MaterialFromDb) {
         dispatch('change', option);
     }
 </script>
@@ -20,14 +18,14 @@
         <div class="option">
             <div
                 class="option-image"
-                class:selected={option === value}
+                class:selected={option.id === value.id}
                 on:click={() => handleOptionChange(option)}
             >
                 <MaterialView
-                    url={$materialsNormalized[option].imageUrl}
+                    material={option}
                 />
             </div>
-            <span class="option-title">{$materialsNormalized[option].title}</span>
+            <span class="option-title">{option.title}</span>
         </div>
     {/each}
 </div>

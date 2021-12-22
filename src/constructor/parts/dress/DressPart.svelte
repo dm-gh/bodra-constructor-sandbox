@@ -1,22 +1,19 @@
 <script lang="ts">
-    import type { DressElement } from './store';
-    import assets from '../../assets/shapes';
-    import { onMount } from 'svelte';
-    import { selectedDressElementKey, visibleDressSide } from './store';
+    import { DressPart, DressSide } from '../../store/types';
     import MaterialView from '../../common/MaterialView.svelte';
-    import { materialsNormalized } from '../material/store';
+    import { selectedDressPartId } from '../../store/runtime';
+    import ShapeView from '../../common/ShapeView.svelte';
 
-    export let element: DressElement;
-
-    $: svgElement = assets[element?.shape] ?? '';
+    export let side: DressSide;
+    export let part: DressPart;
 
     let wrapperDiv: HTMLDivElement;
 
     let hitboxGroups: [SVGPathElement[], SVGPathElement[]] = [[], []];
 
-    onMount(() => {
+    async function onShapeLoad() {
         const clickListener = () => {
-            selectedDressElementKey.set(element.key);
+            selectedDressPartId.set(part.id);
         };
 
         hitboxGroups = [
@@ -27,27 +24,27 @@
         Array.from(wrapperDiv.querySelectorAll('svg .hitbox')).forEach(element => {
             element.addEventListener('click', clickListener)
         })
-    })
+    }
 </script>
 
 <div
     class="element"
-    class:selected={$selectedDressElementKey === element.key}
-    class:front={$visibleDressSide === 'front'}
-    class:back={$visibleDressSide === 'back'}
+    class:selected={$selectedDressPartId === part.id}
+    class:front={side === DressSide.FRONT}
+    class:back={side === DressSide.BACK}
     bind:this={wrapperDiv}
 >
     {#each hitboxGroups as hitboxes, i}
-        {#if ($visibleDressSide === 'front' && i === 0)
-            || ($visibleDressSide === 'back' && i === 1)}
+        {#if (side === DressSide.FRONT && i === 0)
+            || (side === DressSide.BACK && i === 1)}
             {#each hitboxes as hitbox}
                 <div class="material" style={`clip-path: path("${hitbox.getAttribute('d')}")`}>
-                    <MaterialView url={$materialsNormalized[element.material].imageUrl} />
+                    <MaterialView material={part.material}/>
                 </div>
             {/each}
         {/if}
     {/each}
-    {@html svgElement}
+    <ShapeView on:load={onShapeLoad} shape={part.shape}/>
 </div>
 
 <style>

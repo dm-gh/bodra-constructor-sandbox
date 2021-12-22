@@ -2,13 +2,27 @@
     // import Accordion from '../common/accordion/Accordion.svelte';
     // import AccordionItem from '../common/accordion/AccordionItem.svelte';
     // import DressElementColorSelector from './dress/DressElementColorSelector.svelte';
-    import DressElementMaterialSelector from './dress/DressElementMaterialSelector.svelte';
+    import DressMaterialSelector from './dress/DressMaterialSelector.svelte';
+    import DressShapeSelector from './dress/DressShapeSelector.svelte';
+    import ChangeDressSideButton from './dress/ChangeDressSideButton.svelte';
+    import SubmitButton from './billing/SubmitButton.svelte';
+    // import { shapes } from '../store/shapes';
+    // import { materials } from '../store/materials';
+    // import { dresses } from '../store/dresses';
+
+    // $: $shapes.then(console.log);
+    // $: $materials.then(console.log);
+    // $: $dresses.then(console.log);
 </script>
 
 <div>
 
-    <DressElementMaterialSelector/>
+    <DressShapeSelector/>
+    <DressMaterialSelector/>
 
+    <ChangeDressSideButton/>
+
+    <SubmitButton/>
 <!--    <DressElementColorSelector/>-->
 
 <!--    <Accordion>-->
